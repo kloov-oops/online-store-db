@@ -25,31 +25,30 @@
 - `products` → `order_items`: один ко многим (1:N)
 
 ### ER-диаграмма
-┌─────────────┐ ┌─────────────┐
-│ customers │ │ orders │
-├─────────────┤ ├─────────────┤
-│ id (PK) │◄─────────│ id (PK) │
-│ first_name │ │ customer_id │
-│ last_name │ │ order_date │
-│ email │ │ status │
-│ phone │ │ total_amount│
-│ address │ └─────────────┘
-│ registered_at│ │
-└─────────────┘ │
-│
-│ 1:N
-▼
-┌─────────────┐ ┌─────────────┐
-│ products │ │ order_items │
-├─────────────┤ ├─────────────┤
-│ id (PK) │◄─────────│ id (PK) │
-│ sku │ │ order_id │
-│ name │ │ product_id │
-│ description │ │ quantity │
-│ price │ │ price_at_order│
-│ stock_quantity│ └─────────────┘
-│ created_at │
-└─────────────┘
+┌──────────────┐          ┌─────────────┐
+│ customers    │          │ orders      │
+├──────────────┤          ├─────────────┤
+│ id (PK)      │          │ id (PK)     │
+│ first_name   │    1:N   │ customer_id │
+│ last_name    │---------→│ order_date  │
+│ email        │          │ status      │
+│ phone        │          │ total_amount│
+│ address      │          └─────────────┘
+│ registered_at│                 │
+└──────────────┘                 │  1:N
+                                 │
+                                 ↓
+┌───────────────┐          ┌───────────────┐
+│ products      │          │ order_items   │
+├───────────────┤   1:N    ├───────────────┤
+│ id (PK)       │---------→│ id (PK)       │
+│ sku           │          │ order_id      │
+│ name          │          │ product_id    │
+│ description   │          │ quantity      │
+│ price         │          │ price_at_order│
+│ stock_quantity│          └───────────────┘
+│ created_at    │
+└───────────────┘
 
 ## Установка и развертывание
 
@@ -124,4 +123,5 @@ online_store_db/
 Оформления технической документации
 
 Контакты
-Иван - https://github.com/kloov-oops
+https://github.com/kloov-oops
+kloov-oops-jiv@proton.me
