@@ -25,30 +25,45 @@
 - `products` → `order_items`: один ко многим (1:N)
 
 ### ER-диаграмма
-┌──────────────┐          ┌─────────────┐
-│ customers    │          │ orders      │
-├──────────────┤          ├─────────────┤
-│ id (PK)      │          │ id (PK)     │
-│ first_name   │    1:N   │ customer_id │
-│ last_name    │---------→│ order_date  │
-│ email        │          │ status      │
-│ phone        │          │ total_amount│
-│ address      │          └─────────────┘
-│ registered_at│                 │
-└──────────────┘                 │  1:N
-                                 │
-                                 ↓
-┌───────────────┐          ┌───────────────┐
-│ products      │          │ order_items   │
-├───────────────┤   1:N    ├───────────────┤
-│ id (PK)       │---------→│ id (PK)       │
-│ sku           │          │ order_id      │
-│ name          │          │ product_id    │
-│ description   │          │ quantity      │
-│ price         │          │ price_at_order│
-│ stock_quantity│          └───────────────┘
-│ created_at    │
-└───────────────┘
+```mermaid
+erDiagram
+    CUSTOMERS {
+        int id PK
+        string first_name
+        string last_name
+        string email UK
+        string phone
+        text address
+        timestamp registered_at
+    }
+    ORDERS {
+        int id PK
+        int customer_id FK
+        timestamp order_date
+        string status
+        decimal total_amount
+    }
+    PRODUCTS {
+        int id PK
+        string sku UK
+        string name
+        text description
+        decimal price
+        int stock_quantity
+        timestamp created_at
+    }
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal price_at_order
+    }
+
+    CUSTOMERS ||--o{ ORDERS : "делает"
+    ORDERS ||--o{ ORDER_ITEMS : "содержит"
+    PRODUCTS ||--o{ ORDER_ITEMS : "входит в" 
+```
 
 ## Установка и развертывание
 
