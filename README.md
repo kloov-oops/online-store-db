@@ -25,8 +25,44 @@
 - `products` → `order_items`: один ко многим (1:N)
 
 ### ER-диаграмма
-```markdown
-![ER-диаграмма](./ER-диаграмма.png)
+```mermaid
+erDiagram
+    CUSTOMERS {
+        int id PK
+        string first_name
+        string last_name
+        string email UK
+        string phone
+        text address
+        timestamp registered_at
+    }
+    ORDERS {
+        int id PK
+        int customer_id FK
+        timestamp order_date
+        string status
+        decimal total_amount
+    }
+    PRODUCTS {
+        int id PK
+        string sku UK
+        string name
+        text description
+        decimal price
+        int stock_quantity
+        timestamp created_at
+    }
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal price_at_order
+    }
+
+    CUSTOMERS ||--o{ ORDERS : "делает"
+    ORDERS ||--o{ ORDER_ITEMS : "содержит"
+    PRODUCTS ||--o{ ORDER_ITEMS : "входит в"
 ```
 ## Установка и развертывание
 
@@ -34,55 +70,64 @@
 ```bash
 sudo apt update
 sudo apt install postgresql postgresql-contrib -y
+```
 2. Создание базы данных и пользователя
-bash
+```bash
 sudo -u postgres psql
 CREATE DATABASE online_store;
 CREATE USER store_admin WITH PASSWORD 'your_password';
 GRANT ALL PRIVILEGES ON DATABASE online_store TO store_admin;
 \q
+```
 3. Создание таблиц
-bash
+```bash
 sudo -u postgres psql -d online_store -f create_tables.sql
+```
 4. Заполнение тестовыми данными
-bash
+```bash
 sudo -u postgres psql -d online_store -f insert_data.sql
+```
 SQL-запросы для анализа данных
 1. Топ-3 самых продаваемых товара
-sql
+```sql
 SELECT p.name, SUM(oi.quantity) AS total_sold
 FROM order_items oi
 JOIN products p ON oi.product_id = p.id
 GROUP BY p.name
 ORDER BY total_sold DESC
 LIMIT 3;
+```
 2. Общая сумма покупок по каждому клиенту
-sql
+```sql
 SELECT c.first_name || ' ' || c.last_name AS customer_name, SUM(o.total_amount) AS total_spent
 FROM customers c
 JOIN orders o ON c.id = o.customer_id
 GROUP BY c.id, c.first_name, c.last_name
 ORDER BY total_spent DESC;
+```
 3. Количество заказов по статусам
-sql
+```sql
 SELECT status, COUNT(*) AS order_count
 FROM orders
 GROUP BY status;
+```
 4. Клиенты с наибольшим количеством заказов
-sql
+```sql
 SELECT c.first_name || ' ' || c.last_name AS customer_name, COUNT(o.id) AS order_count
 FROM customers c
 JOIN orders o ON c.id = o.customer_id
 GROUP BY c.id, c.first_name, c.last_name
 ORDER BY order_count DESC;
+```
 5. Товары, требующие пополнения (остаток < 10)
-sql
+```sql
 SELECT name, stock_quantity
 FROM products
 WHERE stock_quantity < 10
 ORDER BY stock_quantity ASC;
+```
 Структура репозитория
-text
+```text
 online_store_db/
 ├── README.md              # Документация проекта
 ├── create_tables.sql      # Скрипт создания таблиц
