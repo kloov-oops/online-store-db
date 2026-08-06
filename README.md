@@ -25,46 +25,9 @@
 - `products` → `order_items`: один ко многим (1:N)
 
 ### ER-диаграмма
-```mermaid
-erDiagram
-    CUSTOMERS {
-        int id PK
-        string first_name
-        string last_name
-        string email UK
-        string phone
-        text address
-        timestamp registered_at
-    }
-    ORDERS {
-        int id PK
-        int customer_id FK
-        timestamp order_date
-        string status
-        decimal total_amount
-    }
-    PRODUCTS {
-        int id PK
-        string sku UK
-        string name
-        text description
-        decimal price
-        int stock_quantity
-        timestamp created_at
-    }
-    ORDER_ITEMS {
-        int id PK
-        int order_id FK
-        int product_id FK
-        int quantity
-        decimal price_at_order
-    }
-
-    CUSTOMERS ||--o{ ORDERS : "делает"
-    ORDERS ||--o{ ORDER_ITEMS : "содержит"
-    PRODUCTS ||--o{ ORDER_ITEMS : "входит в" 
+```markdown
+![ER-диаграмма](./ER-диаграмма.png)
 ```
-
 ## Установка и развертывание
 
 ### 1. Установка PostgreSQL
@@ -126,6 +89,7 @@ online_store_db/
 ├── insert_data.sql        # Скрипт заполнения тестовыми данными
 ├── queries.sql            # Аналитические запросы
 └── online_store_dump.sql  # Дамп всей базы данных
+```
 Выводы
 В ходе проекта были приобретены и продемонстрированы навыки:
 
