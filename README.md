@@ -91,6 +91,8 @@ erDiagram
     CATEGORIES ||--o{ PRODUCTS : "имеет"
     SUPPLIERS ||--o{ PRODUCTS : "поставляет"
     ORDERS ||--|| PAYMENTS : "оплачен"
+```
+
 Расширенная структура базы данных
 Новые таблицы
 categories – категории товаров (id, name, description).
