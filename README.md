@@ -121,42 +121,58 @@ v_monthly_revenue – помесячная выручка по доставле�
 
 Установка и развертывание
 1. Клонирование репозитория
-bash
+```bash
 git clone https://github.com/kloov-oops/online-store-db.git
 cd online-store-db
+```
+
 2. Установка PostgreSQL (если не установлен)
-bash
+```bash
 sudo apt update
 sudo apt install postgresql postgresql-contrib -y
+```
+
 3. Создание базы данных и пользователя
-bash
+```bash
 sudo -u postgres psql
 CREATE DATABASE online_store;
 CREATE USER store_admin WITH PASSWORD 'your_password';
 GRANT ALL PRIVILEGES ON DATABASE online_store TO store_admin;
 \q
+```
+
 4. Создание таблиц, триггеров, индексов и представлений
 В репозитории есть файл create_tables.sql (обновлённый). Выполните:
 
-bash
+```bash
 sudo -u postgres psql -d online_store < create_tables.sql
+```
+
 5. Заполнение тестовыми данными
-bash
+```bash
 sudo -u postgres psql -d online_store < insert_data.sql
+```
+
 6. Настройка Python-окружения
 Установите python3-venv, если ещё нет:
 
-bash
+```bash
 sudo apt install python3-venv -y
+```
+
 Создайте и активируйте виртуальное окружение:
 
-bash
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
+
 Установите зависимости:
 
-bash
+```bash
 pip install psycopg2-binary flask
+```
+
 7. Настройка подключения к БД
 В файлах analytics.py и app.py замените пароль your_password на реальный пароль пользователя store_admin.
 
@@ -164,8 +180,9 @@ pip install psycopg2-binary flask
 Аналитический скрипт (analytics.py)
 Запускает три отчёта и сохраняет их в CSV:
 
-bash
+```bash
 python3 analytics.py
+```
 Результаты:
 
 top_products.csv – топ-3 товара по продажам.
@@ -177,15 +194,19 @@ monthly_revenue.csv – помесячная выручка.
 REST API (app.py)
 Запускает сервер на http://localhost:5000:
 
-bash
+```bash
 python3 app.py
+```
+
 Доступные эндпоинты
 GET /top-products – возвращает JSON с топ-3 товарами.
 
 Пример:
 
-bash
+```bash
 curl http://localhost:5000/top-products
+```
+
 GET /customer-spending – возвращает траты по клиентам.
 
 GET /monthly-revenue – возвращает помесячную выручку.
@@ -194,7 +215,7 @@ POST /add-order – создаёт новый заказ.
 
 Тело запроса (JSON):
 
-json
+```json
 {
   "customer_id": 1,
   "items": [
@@ -202,38 +223,48 @@ json
     {"product_id": 3, "quantity": 1}
   ]
 }
+```
+
 Пример:
 
-bash
+```bash
 curl -X POST http://localhost:5000/add-order \
   -H "Content-Type: application/json" \
   -d '{"customer_id": 1, "items": [{"product_id": 1, "quantity": 2}]}'
+```
+
 Ответ вернёт order_id и статус.
 
 Аналитические запросы (примеры)
 Все запросы собраны в файле queries.sql. Ниже – несколько ключевых.
 
 Топ категорий по выручке
-sql
+```sql
 SELECT c.name, SUM(oi.quantity * oi.price_at_order) AS revenue
 FROM order_items oi
 JOIN products p ON oi.product_id = p.id
 JOIN categories c ON p.category_id = c.id
 GROUP BY c.name
 ORDER BY revenue DESC;
+```
+
 Клиенты без покупок
-sql
+```sql
 SELECT c.*
 FROM customers c
 LEFT JOIN orders o ON c.id = o.customer_id
 WHERE o.id IS NULL;
+```
+
 Список заказов с платежами
-sql
+```sql
 SELECT o.id, o.order_date, o.total_amount, p.method, p.status
 FROM orders o
 JOIN payments p ON o.id = p.order_id;
+```
+
 Структура репозитория
-text
+```text
 online_store_db/
 ├── README.md                # Документация проекта
 ├── create_tables.sql        # Создание таблиц, триггеров, индексов, представлений
@@ -246,6 +277,8 @@ online_store_db/
 ├── customer_spending.csv    # Пример отчёта (генерируется)
 ├── monthly_revenue.csv      # Пример отчёта (генерируется)
 └── venv/                    # Виртуальное окружение Python (не включается в Git)
+```
+
 Выводы
 В ходе проекта были продемонстрированы навыки:
 
